@@ -1,36 +1,36 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { View, Text, Button, StyleSheet, Alert } from 'react-native';
-import { Camera } from 'expo-camera';
-
+import { CameraView, useCameraPermissions } from 'expo-camera';
 
 export default function QRCodeScannerScreen() {
-  const [hasPermission, setHasPermission] = useState(null);
+  const [permission, requestPermission] = useCameraPermissions();
   const [scanned, setScanned] = useState(false);
 
-  useEffect(() => {
-    (async () => {
-      const { status } = await Camera.requestCameraPermissionsAsync();
-      setHasPermission(status === 'granted');
-    })();
-  }, []);
+  if (!permission) {
+    // Carregando o status da permissão
+    return <View><Text>Verificando permissões...</Text></View>;
+  }
+
+  if (!permission.granted) {
+    // Permissão negada ou ainda não solicitada
+    return (
+      <View style={styles.container}>
+        <Text>Permissão para usar a câmera foi negada.</Text>
+        <Button title="Permitir câmera" onPress={requestPermission} />
+      </View>
+    );
+  }
 
   const handleBarCodeScanned = ({ type, data }) => {
     setScanned(true);
-    Alert.alert('QR Code escaneado', `Tipo: ${type}\nDados: ${data}`);
+    Alert.alert('QR Code lido', `Tipo: ${type}\nDados: ${data}`);
   };
-
-  if (hasPermission === null) {
-    return <Text>Solicitando permissão para câmera...</Text>;
-  }
-  if (hasPermission === false) {
-    return <Text>Permissão negada para câmera.</Text>;
-  }
 
   return (
     <View style={styles.container}>
-      <Camera
-        onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
+      <CameraView
         style={StyleSheet.absoluteFillObject}
+        onBarcodeScanned={scanned ? undefined : handleBarCodeScanned}
       />
       {scanned && (
         <Button title="Escanear novamente" onPress={() => setScanned(false)} />
