@@ -1,25 +1,16 @@
 import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  TextInput,
-  Button,
-  StyleSheet,
-  ImageBackground,
-  Modal,
-  TouchableOpacity,
-} from 'react-native';
+import {  View,  Text,  TextInput,  Button,  StyleSheet,  ImageBackground,  Modal,  TouchableOpacity } from 'react-native';
 
 export default function LoginScreen({ navigation }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [showError, setShowError] = useState(false); // controla modal
+  const [showError, setShowError] = useState(false); 
 
   const handleLogin = () => {
     if (username === 'thiago' && password === '123') {
       navigation.navigate('Inicio');
     } else {
-      setShowError(true); // ativa modal de erro
+      setShowError(true); 
     }
   };
 
@@ -55,7 +46,7 @@ export default function LoginScreen({ navigation }) {
         </View>
       </View>
 
-      {/* Modal de erro */}
+     
       <Modal
         visible={showError}
         transparent
