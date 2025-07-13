@@ -1,16 +1,32 @@
 import React, { useState } from 'react';
-import {  View,  Text,  TextInput,  TouchableOpacity,  StyleSheet,  Alert,  KeyboardAvoidingView,  Platform,  ScrollView,  Image } from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  Image,
+} from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 
 export default function FormularioDevolucaoScreen({ route, navigation }) {
-  const { produto } = route.params;
+
+  console.log('route.params:', route.params);
+  console.log('produto:', route.params?.produto);
+
+  const { produto } = route.params; 
+
   const [motivo, setMotivo] = useState('');
 
   const handleConfirmar = async () => {
     if (!motivo.trim()) {
       Alert.alert('Atenção', 'Digite o motivo da devolução.');
       return;
-    }
+    }    
 
     try {
       const response = await fetch('http://192.168.18.73:3000/enviar-email', {
@@ -19,10 +35,10 @@ export default function FormularioDevolucaoScreen({ route, navigation }) {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          nome: produto.nome,
-          codigo: produto.codigo,
-          preco: produto.preco,
-          setor: produto.setor,
+          nome: produto?.nome,
+          codigo: produto?.codigo,
+          preco: produto?.preco,
+          setor: produto?.setor,
           motivo: motivo.trim(),
         }),
       });
@@ -36,10 +52,12 @@ export default function FormularioDevolucaoScreen({ route, navigation }) {
         Alert.alert('Erro', data.erro || 'Erro ao enviar e-mail.');
       }
     } catch (error) {
-      console.error('Erro ao enviar:', error);
+      console.error('❌ Erro ao enviar:', error);
       Alert.alert('Erro', 'Falha ao conectar com o servidor.');
     }
   };
+
+ console.log("Produto recebido na rota:", produto);
 
   return (
     <KeyboardAvoidingView
@@ -53,7 +71,6 @@ export default function FormularioDevolucaoScreen({ route, navigation }) {
         style={styles.gradient}
       >
         <ScrollView contentContainerStyle={styles.scroll}>
-          {/* Topo com logo */}
           <View style={styles.top}>
             <Image
               source={require('../assets/dibs_logo.jpg')}
@@ -62,15 +79,13 @@ export default function FormularioDevolucaoScreen({ route, navigation }) {
             />
           </View>
 
-          {/* Card com informações do produto */}
           <View style={styles.card}>
-            <InfoItem label="Produto" value={produto.nome} />
-            <InfoItem label="Código" value={produto.codigo} />
-            <InfoItem label="Setor" value={produto.setor} />
-            <InfoItem label="Preço" value={`R$ ${produto.preco}`} />
+            <InfoItem label="Produto" value={produto?.nome} />
+            <InfoItem label="Código" value={produto?.codigo} />
+            <InfoItem label="Setor" value={produto?.setor} />
+            <InfoItem label="Preço" value={`R$ ${produto?.preco}`} />
           </View>
 
-          {/* Campo de motivo */}
           <Text style={styles.sectionLabel}>Motivo da Devolução</Text>
           <TextInput
             style={styles.input}
@@ -81,7 +96,6 @@ export default function FormularioDevolucaoScreen({ route, navigation }) {
             onChangeText={setMotivo}
           />
 
-          {/* Botão com degradê */}
           <TouchableOpacity
             activeOpacity={0.85}
             onPress={handleConfirmar}
@@ -112,25 +126,11 @@ function InfoItem({ label, value }) {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  gradient: {
-    flex: 1,
-  },
-  scroll: {
-    padding: 24,
-    paddingBottom: 40,
-  },
-  top: {
-    alignItems: 'center',
-    marginBottom: 24,
-  },
-  logo: {
-    width: 160,
-    height: 100,
-    marginVertical: 16,
-  },
+  container: { flex: 1 },
+  gradient: { flex: 1 },
+  scroll: { padding: 24, paddingBottom: 40 },
+  top: { alignItems: 'center', marginBottom: 24 },
+  logo: { width: 160, height: 100, marginVertical: 16 },
   card: {
     backgroundColor: '#ffffff',
     borderRadius: 14,
@@ -142,25 +142,10 @@ const styles = StyleSheet.create({
     shadowRadius: 6,
     elevation: 3,
   },
-  infoItem: {
-    marginBottom: 12,
-  },
-  infoLabel: {
-    fontSize: 14,
-    color: '#94a3b8',
-    marginBottom: 2,
-  },
-  infoValue: {
-    fontSize: 16,
-    color: '#1e293b',
-    fontWeight: '600',
-  },
-  sectionLabel: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#334155',
-    marginBottom: 10,
-  },
+  infoItem: { marginBottom: 12 },
+  infoLabel: { fontSize: 14, color: '#94a3b8', marginBottom: 2 },
+  infoValue: { fontSize: 16, color: '#1e293b', fontWeight: '600' },
+  sectionLabel: { fontSize: 16, fontWeight: '600', color: '#334155', marginBottom: 10 },
   input: {
     backgroundColor: '#ffffff',
     borderColor: '#cbd5e1',
@@ -173,15 +158,8 @@ const styles = StyleSheet.create({
     marginBottom: 28,
     color: '#0f172a',
   },
-  buttonWrapper: {
-    borderRadius: 12,
-    overflow: 'hidden',
-  },
-  buttonGradient: {
-    paddingVertical: 16,
-    alignItems: 'center',
-    borderRadius: 12,
-  },
+  buttonWrapper: { borderRadius: 12, overflow: 'hidden' },
+  buttonGradient: { paddingVertical: 16, alignItems: 'center', borderRadius: 12 },
   buttonText: {
     fontSize: 16,
     fontWeight: '600',

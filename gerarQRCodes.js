@@ -15,8 +15,7 @@ if (!fs.existsSync('./qrcodes')) {
 }
 
 produtos.forEach(async (item) => {
-  if (item.preco === undefined || item.preco === null) {
-    console.warn(`⚠️ Produto "${item.nome}" (código: ${item.codigo}) não tem preço definido!`);
+  if (item.preco === undefined || item.preco === null) {    
   }
 
   const data = JSON.stringify(item);

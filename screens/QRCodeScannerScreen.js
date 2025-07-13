@@ -14,8 +14,8 @@ export default function QRCodeScannerScreen() {
 
   if (!permission.granted) {
     return (
-      <View style={styles.container}>
-        <Text>Permissão para usar a câmera foi negada.</Text>
+      <View style={styles.permissionContainer}>
+        <Text style={styles.permissionText}>Permissão para usar a câmera foi negada.</Text>
         <Button title="Permitir câmera" onPress={requestPermission} />
       </View>
     );
@@ -23,13 +23,16 @@ export default function QRCodeScannerScreen() {
 
   const handleBarCodeScanned = ({ type, data }) => {
     setScanned(true);
+
     try {
-      const produto = JSON.parse(data);
-      console.log('Produto lido do QR:', produto);
+      // Tenta interpretar o dado como JSON (caso de QR Code estruturado)
+      const produto = JSON.parse(data);    
       navigation.navigate('FormularioDevolucao', { produto });
-    } catch (error) {
-      Alert.alert('QR Code inválido', 'Formato não reconhecido.');
-      setScanned(false);
+    } catch {
+      // Caso não seja JSON, trata como código de barras simples
+      console.log('Código de barras lido:', data);
+      const produto = { codigo: data }; // você pode ajustar esse formato
+      navigation.navigate('FormularioDevolucao', { produto });
     }
   };
 
@@ -38,9 +41,22 @@ export default function QRCodeScannerScreen() {
       <CameraView
         style={StyleSheet.absoluteFillObject}
         onBarcodeScanned={scanned ? undefined : handleBarCodeScanned}
+        barcodeScannerSettings={{
+          barcodeTypes: [
+            'qr',
+            'ean13',
+            'code128',
+            'code39',
+            'upc_a',
+            'upc_e',
+            'ean8',
+          ],
+        }}
       />
       {scanned && (
-        <Button title="Escanear novamente" onPress={() => setScanned(false)} />
+        <View style={styles.buttonContainer}>
+          <Button title="Escanear novamente" onPress={() => setScanned(false)} />
+        </View>
       )}
     </View>
   );
@@ -48,4 +64,20 @@ export default function QRCodeScannerScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
+  permissionContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  permissionText: {
+    marginBottom: 20,
+    fontSize: 16,
+    textAlign: 'center',
+  },
+  buttonContainer: {
+    position: 'absolute',
+    bottom: 40,
+    alignSelf: 'center',
+  },
 });
