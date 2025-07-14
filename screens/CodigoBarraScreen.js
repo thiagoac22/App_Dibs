@@ -32,50 +32,29 @@ export default function CodigoBarraScreen() {
 
   const handleBarCodeScanned = ({ type, data }) => {
     setScanned(true);
-    console.log('📸 Código lido:', data);
 
-    try {
-      // Tenta interpretar como JSON (para QR Codes com objeto completo)
-      const produto = JSON.parse(data);
-      console.log('📦 Produto lido (JSON):', produto);
+    const codigo = data.trim();
+    console.log('📸 Código lido:', codigo);
 
-      if (typeof produto === 'string') {
-        const produtoEncontrado = produtos.find(p => p.codigo === produto.trim());
-        if (!produtoEncontrado) {
-          Alert.alert('Produto não encontrado', `Nenhum produto com o código: ${produto}`);
-          setScanned(false);
-          return;
-        }
-        navigation.navigate('FormularioDevolucao', { produto: produtoEncontrado });
-      } else if (typeof produto === 'object' && produto !== null) {
-        navigation.navigate('FormularioDevolucao', { produto });
-      } else {
-        Alert.alert('Erro', 'Dados do produto inválidos.');
-        setScanned(false);
-      }
+    const produtoEncontrado = produtos.find(p => p.codigo === codigo);
 
-    } catch (error) {
-      console.log('⚠️ Erro ao interpretar como JSON:', error);
-
-      const codigoLimpo = data.trim();
-      const produtoEncontrado = produtos.find(p => p.codigo === codigoLimpo);
-
-      if (!produtoEncontrado) {
-        Alert.alert('Produto não encontrado', `Nenhum produto com o código: ${data}`);
-        setScanned(false);
-        return;
-      }
-
-      console.log('✅ Produto encontrado:', produtoEncontrado);
-      navigation.navigate('FormularioDevolucao', { produto: produtoEncontrado });
+    if (!produtoEncontrado) {
+      Alert.alert('Produto não encontrado', `Nenhum produto com o código: ${codigo}`);
+      setScanned(false);
+      return;
     }
+
+    console.log('Tipo de produtoEncontrado:', typeof produtoEncontrado);
+    console.log('✅ Produto encontrado:', produtoEncontrado);
+
+    navigation.navigate('FormularioDevolucao', { produto: produtoEncontrado });
   };
 
   return (
     <View style={styles.container}>
       <CameraView
         style={StyleSheet.absoluteFillObject}
-        onBarCodeScanned={scanned ? undefined : handleBarCodeScanned} 
+        onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
         barcodeScannerSettings={{
           barcodeTypes: ['ean13', 'code128', 'qr'],
         }}

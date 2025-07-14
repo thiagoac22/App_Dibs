@@ -14,11 +14,23 @@ import {
 import { LinearGradient } from 'expo-linear-gradient';
 
 export default function FormularioDevolucaoScreen({ route, navigation }) {
+  const produtos = [
+    { nome: "Tênis Branco Nike", codigo: "123456789012", preco: 150.00, setor: "Masculino" },
+    { nome: "Sapatilha Preta", codigo: "123456789013", preco: 49.00, setor: "Feminino" },
+    { nome: "Bota Couro", codigo: "123456789014", preco: 200.00, setor: "Masculino" },
+    { nome: "Bolsa Preta Armani", codigo: "123456789015", preco: 300.00, setor: "Feminino" },
+    { nome: "Relógio Rolex", codigo: "123456789016", preco: 1500.00, setor: "Masculino" }
+  ];
 
   console.log('route.params:', route.params);
-  console.log('produto:', route.params?.produto);
+  console.log('produto tipo:', typeof route.params.produto);
 
-  const { produto } = route.params; 
+  const paramProduto = route.params?.produto;
+
+  // Verifica se recebeu o objeto ou apenas o código
+  const produto = typeof paramProduto === 'object'
+    ? paramProduto
+    : produtos.find(p => p.codigo === String(paramProduto));
 
   const [motivo, setMotivo] = useState('');
 
@@ -26,7 +38,7 @@ export default function FormularioDevolucaoScreen({ route, navigation }) {
     if (!motivo.trim()) {
       Alert.alert('Atenção', 'Digite o motivo da devolução.');
       return;
-    }    
+    }
 
     try {
       const response = await fetch('http://192.168.18.73:3000/enviar-email', {
@@ -57,7 +69,7 @@ export default function FormularioDevolucaoScreen({ route, navigation }) {
     }
   };
 
- console.log("Produto recebido na rota:", produto);
+  console.log("Produto resolvido para exibição:", produto);
 
   return (
     <KeyboardAvoidingView
@@ -83,7 +95,14 @@ export default function FormularioDevolucaoScreen({ route, navigation }) {
             <InfoItem label="Produto" value={produto?.nome} />
             <InfoItem label="Código" value={produto?.codigo} />
             <InfoItem label="Setor" value={produto?.setor} />
-            <InfoItem label="Preço" value={`R$ ${produto?.preco}`} />
+            <InfoItem
+              label="Preço"
+              value={
+                produto?.preco !== undefined && produto?.preco !== null
+                  ? `R$ ${produto.preco.toFixed(2).replace('.', ',')}`
+                  : 'Preço indisponível'
+              }
+            />
           </View>
 
           <Text style={styles.sectionLabel}>Motivo da Devolução</Text>
