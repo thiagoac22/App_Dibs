@@ -14,7 +14,7 @@ export default function HomeScreen({ navigation }) {
           style={styles.buttonPrimary}
           onPress={() => navigation.navigate('QRCodeScanner')}
         >
-          <Text style={styles.buttonText}>📷 Ler QR Code</Text>
+          <Text style={styles.buttonText}>📷 Ler QR Code ou Código de Barras</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
