@@ -8,20 +8,23 @@ const PORT = 3000;
 app.use(cors());
 app.use(express.json());
 
+// Variável para guardar o e-mail da central (padrão inicial)
+let emailCentral = 'thiagoalvez451@gmail.com';
+
 app.post('/enviar-email', async (req, res) => {
   const { nome, codigo, preco, setor, motivo } = req.body;
 
   const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-      user: 'thiagoalvez451@gmail.com',       // substitua pelo seu e-mail
-      pass: 'vbur xmsi zufs tzsc',      // use uma senha de app
+      user: 'thiagoalvez451@gmail.com',       // seu e-mail para autenticação SMTP
+      pass: 'vbur xmsi zufs tzsc',            // sua senha de app
     },
   });
 
   const mailOptions = {
     from: 'thiagoalvez451@gmail.com',
-    to: 'thiagoalvez451@gmail.com',         // e-mail da central
+    to: emailCentral,    // aqui usa a variável dinâmica
     subject: `Devolução: ${codigo} - ${nome}`,
     text: `
 Produto devolvido:
@@ -42,6 +45,17 @@ Data/Hora: ${new Date().toLocaleString()}
     console.error('Erro ao enviar e-mail:', error);
     res.status(500).json({ erro: 'Erro ao enviar e-mail' });
   }
+});
+
+// Nova rota para atualizar o e-mail da central
+app.post('/config/email-central', (req, res) => {
+  const { novoEmail } = req.body;
+  if (!novoEmail || !novoEmail.includes('@')) {
+    return res.status(400).json({ erro: 'E-mail inválido' });
+  }
+  emailCentral = novoEmail;
+  console.log(`E-mail da central atualizado para: ${emailCentral}`);
+  res.json({ mensagem: 'E-mail atualizado com sucesso', emailCentral });
 });
 
 app.listen(PORT, () => {

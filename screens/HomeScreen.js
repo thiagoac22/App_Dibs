@@ -1,4 +1,4 @@
-import {  View,  Text,  StyleSheet,  TouchableOpacity,  ImageBackground } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ImageBackground } from 'react-native';
 
 export default function HomeScreen({ navigation }) {
   return (
@@ -15,6 +15,13 @@ export default function HomeScreen({ navigation }) {
           onPress={() => navigation.navigate('QRCodeScanner')}
         >
           <Text style={styles.buttonText}>📷 Ler QR Code ou Código de Barras</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.buttonSecondary}
+          onPress={() => navigation.navigate('Configuracoes')}
+        >
+          <Text style={styles.buttonText}>⚙️ Configurações</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
@@ -48,7 +55,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   buttonPrimary: {
-    backgroundColor: '#dc3545', 
+    backgroundColor: '#dc3545',
     paddingVertical: 14,
     paddingHorizontal: 30,
     borderRadius: 10,
@@ -57,7 +64,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   buttonSecondary: {
-    backgroundColor: '#dc3545', 
+    backgroundColor: '#dc3545',
     paddingVertical: 14,
     paddingHorizontal: 30,
     borderRadius: 10,

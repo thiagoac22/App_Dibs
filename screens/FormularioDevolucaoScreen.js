@@ -27,7 +27,6 @@ export default function FormularioDevolucaoScreen({ route, navigation }) {
 
   const paramProduto = route.params?.produto;
 
-  // Verifica se recebeu o objeto ou apenas o código
   const produto = typeof paramProduto === 'object'
     ? paramProduto
     : produtos.find(p => p.codigo === String(paramProduto));
@@ -58,8 +57,17 @@ export default function FormularioDevolucaoScreen({ route, navigation }) {
       const data = await response.json();
 
       if (response.ok) {
-        Alert.alert('Sucesso', data.mensagem);
-        navigation.goBack();
+        Alert.alert(
+          'Sucesso',
+          data.mensagem,
+          [
+            {
+              text: 'OK',
+              onPress: () => navigation.navigate('Inicio'), // Navega para Home após o OK
+            },
+          ],
+          { cancelable: false }
+        );
       } else {
         Alert.alert('Erro', data.erro || 'Erro ao enviar e-mail.');
       }

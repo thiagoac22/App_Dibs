@@ -7,6 +7,7 @@ import HomeScreen from './screens/HomeScreen';
 import QRCodeScannerScreen from './screens/QRCodeScannerScreen';
 import FormularioDevolucaoScreen from './screens/FormularioDevolucaoScreen';
 import CodigoBarraScreen from './screens/CodigoBarraScreen';
+import ConfiguracoesScreen from './screens/ConfiguracoesScreen';
 
 const Stack = createStackNavigator();
 
@@ -19,7 +20,7 @@ export default function App() {
         <Stack.Screen name="QRCodeScanner" component={QRCodeScannerScreen} />
         <Stack.Screen name="FormularioDevolucao" component={FormularioDevolucaoScreen} />
         <Stack.Screen name="CodigoBarra" component={CodigoBarraScreen} />
-      
+        <Stack.Screen name="Configuracoes" component={ConfiguracoesScreen} />      
       </Stack.Navigator>
     </NavigationContainer>
   );
